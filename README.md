@@ -1,14 +1,7 @@
-# App name
+# khipu for zendesk
 
-[brief description of the app]
+khipu for Zendesk allows you to create a payment request
+to the current requester of a ticket.
 
-### The following information is displayed:
-
-* info1
-* info2
-* info3
-
-Please submit bug reports to [Insert Link](). Pull requests are welcome.
-
-### Screenshot(s):
-[put your screenshots down here.]
+This is usefull for e-commerce's callcenters that need to charge
+some extra to their clients (shipping, for example).
