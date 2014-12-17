@@ -1,0 +1,11 @@
+#create_payment_form .form-control {
+    margin-bottom: 10px;
+}
+
+#create_payment_form .form-control input, #create_payment_form .form-control textarea {
+    width: 95%;
+}
+
+#create_payment_form .form-buttons {
+    margin-bottom: 10px;
+}

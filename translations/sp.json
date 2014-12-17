@@ -1,0 +1,24 @@
+{
+  "app": {
+    "parameters": {
+      "receiverId": {
+        "label": {
+          "value": "ID del cobrador",
+          "title": "Identificador único del cobrador, se obtiene en khipu.com"
+        }
+      },
+      "secret": {
+        "label": {
+          "value": "Llave secreta",
+          "title": "Llave usada para firmar peticiones a khipu, se obtiene en khipu.com"
+        }
+      },
+      "defaultSubject": {
+        "label": {
+          "value": "Motivo por omisión de las solicitudes de pago.",
+          "title": ""
+        }
+      }
+    }
+  }
+}

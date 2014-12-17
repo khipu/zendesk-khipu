@@ -1,0 +1,24 @@
+{
+  "app": {
+    "parameters": {
+      "receiverId": {
+        "label": {
+          "value": "Receiver ID",
+          "title": "Unique identifier for the receiver, can be obtained at khipu.com"
+        }
+      },
+      "secret": {
+        "label": {
+          "value": "Secret",
+          "title": ""
+        }
+      },
+      "defaultSubject": {
+        "label": {
+          "value": "Default Subject",
+          "title": ""
+        }
+      }
+    }
+  }
+}
