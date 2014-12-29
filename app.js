@@ -265,7 +265,7 @@
 					data: toSend
 				};
 			}
-			, addComment: function (id, url, subject, amount, body) {
+			, addComment: function (id, external_id, url, subject, amount, body) {
 				return {
 					url: '/api/v2/tickets/' + id + '.json',
 					type: 'PUT',
@@ -274,7 +274,37 @@
 							comment: {
 								public: false,
 								body: "Se ha enviado una solicitud de pago de $" + amount + " por " + subject + " (" + url + ")\n\n" + body
-							}
+							},
+							external_id: external_id
+						}
+					}
+				};
+			}
+			, getExternalId: function (id) {
+				return {
+					url: '/api/v2/tickets/' + id + '.json',
+					type: 'GET'
+				};
+			}
+			, getPaymentInfo: function (toSend) {
+				return {
+					url: 'https://khipu.com/api/1.3/paymentInfo',
+					type: 'POST',
+					dataType: 'json',
+					data: toSend
+				};
+			}
+			, addPaymentCompletedComment: function (id, url, subject, amount) {
+				return {
+					url: '/api/v2/tickets/' + id + '.json',
+					type: 'PUT',
+					data: {
+						ticket: {
+							comment: {
+								public: false,
+								body: "La solicitud de pago de $" + amount + " por " + subject + " ya esta pagada. (" + url + ")"
+							},
+							external_id: null
 						}
 					}
 				};
@@ -283,6 +313,26 @@
 
 		, showCreatePaymentForm: function () {
 			var ticket = this.ticket();
+			this.ajax('getExternalId', ticket.id()).done(function (data) {
+				if (data.ticket != null && data.ticket.external_id != null && data.ticket.external_id != '') {
+					var receiver_id = this.settings.receiverId;
+					var secret = this.settings.secret;
+					var id = data.ticket.external_id;
+					var concatenated = "receiver_id=" + receiver_id +
+						"&payment_id=" + id;
+					var hash = "" + CryptoJS.HmacSHA256(concatenated, secret);
+					var toSend = {
+						receiver_id: receiver_id,
+						payment_id: id,
+						hash: hash
+					}
+					this.ajax('getPaymentInfo', toSend).done(function (data) {
+						if (data.status == 'done' && data.detail == 'normal')
+							this.ajax('addPaymentCompletedComment', this.ticket().id(), data.receipt_url, data.subject, data.amount).done(function () {
+							});
+					});
+				}
+			});
 			var data = {
 				name: ticket.requester().name()
 				, email: ticket.requester().email()
@@ -349,7 +399,7 @@
 
 			services.notify('Enviando la solicitud de pago...', 'alert');
 			this.ajax('createEmail', toSend).done(function (data) {
-				this.ajax('addComment', this.ticket().id(), data.payments[0].url, subject, amount, body).done(function () {
+				this.ajax('addComment', this.ticket().id(), data.payments[0].id, data.payments[0].url, subject, amount, body).done(function () {
 					services.notify('La solicitud de pago fue enviada', 'notice');
 					this.$('#create_payment_form')[0].reset();
 				});
